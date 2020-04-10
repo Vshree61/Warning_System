@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "303359565075",
+    "firebase_url": "https://warningsystem-9d1d4.firebaseio.com",
+    "project_id": "warningsystem-9d1d4",
+    "storage_bucket": "warningsystem-9d1d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303359565075:android:2122373062f8801eb04ee6",
+        "android_client_info": {
+          "package_name": "com.example.warningsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "303359565075-tafaj9hr4mtg55a1ijelinpna4dmpnjd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.warningsystem",
+            "certificate_hash": "2943555952d719ff1410054fa7f689e6f3abd75a"
+          }
+        },
+        {
+          "client_id": "303359565075-c1j2okn4fdpjhoi76gg0te3igeobt252.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3cpOqWdsMZewDy-j1OwZZ6RcNpVd-rms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303359565075-c1j2okn4fdpjhoi76gg0te3igeobt252.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
