@@ -1,0 +1,2 @@
+rootProject.name='Warning System'
+include ':app'
