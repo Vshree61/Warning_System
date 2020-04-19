@@ -39,11 +39,6 @@ public class Register extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBar);
 
-        /*
-        if(fAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), NewScreen.class));
-        }*/
-
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +71,7 @@ public class Register extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(Register.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Register.this, NewScreen.class));
+                            startActivity(new Intent(Register.this, StartTracking.class));
 
                         }
                         else{
@@ -85,8 +80,6 @@ public class Register extends AppCompatActivity {
                         }
                     }
                 });
-
-
             }
         });
 

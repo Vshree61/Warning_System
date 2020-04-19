@@ -35,6 +35,7 @@ public class Login extends AppCompatActivity {
         mLoginBtn = findViewById(R.id.loginBtn);
         mCreateBtn = findViewById(R.id.createText);
         progressBar = findViewById(R.id.progressBar2);
+        fAuth = FirebaseAuth.getInstance();
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +63,7 @@ public class Login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(Login.this, "Login Successful ", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Login.this, NewScreen.class));
+                            startActivity(new Intent(Login.this, StartTracking.class));
 
                         }
                         else{
