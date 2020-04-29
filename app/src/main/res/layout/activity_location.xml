@@ -10,7 +10,7 @@
         android:id="@+id/latTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude:"
+        android:text="Current Latitude:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.525"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Longitude: "
+        android:text="Current Longitude: "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.524"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         android:id="@+id/nearbyLoc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nearby"
+        android:text="Getting Nearest Location..."
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,15 +42,5 @@
         app:layout_constraintTop_toBottomOf="@+id/lonTextView"
         app:layout_constraintVertical_bias="0.303" />
 
-    <Button
-        android:id="@+id/nearbyBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Nearby"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nearbyLoc"
-        app:layout_constraintVertical_bias="0.29000002" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

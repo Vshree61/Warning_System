@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,14 +48,12 @@ public class LocationActivity extends AppCompatActivity {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
-    TextView latTextView, lonTextView,nearbyView;
+    TextView latTextView, lonTextView, nearbyView;
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     Double currLatitude;
     Double currLongitude;
-    DatabaseReference reffJn;
-    DatabaseReference reffLand;
-    Button mNearby;
-    Map<Float,String> map = new HashMap<Float, String>();
+    DatabaseReference reff;
+    Map<Float, String> map = new HashMap<Float, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,23 +62,13 @@ public class LocationActivity extends AppCompatActivity {
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
         nearbyView = findViewById(R.id.nearbyLoc);
-        mNearby = findViewById(R.id.nearbyBtn);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        reffLand = FirebaseDatabase.getInstance().getReference();
+        reff = FirebaseDatabase.getInstance().getReference();
         //reffJn = FirebaseDatabase.getInstance().getReference().child("Junction").child("1");
         getLastLocation();
-        //getNearby();
-
-        mNearby.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("LocationActivity", "calling nearby");
-                getNearby();
-            }
-        });
+        getNearby();
 
     }
-
 
 
     @Override
@@ -90,16 +80,16 @@ public class LocationActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.logout){
+        if (id == R.id.logout) {
             fAuth.signOut();
-            startActivity(new Intent(LocationActivity.this,Login.class));
+            startActivity(new Intent(LocationActivity.this, Login.class));
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @SuppressLint("MissingPermission")
-    private void getLastLocation(){
+    private void getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(
@@ -110,10 +100,10 @@ public class LocationActivity extends AppCompatActivity {
                                 if (location == null) {
                                     requestNewLocationData();
                                 } else {
-                                    latTextView.setText(location.getLatitude()+"");
-                                    lonTextView.setText(location.getLongitude()+"");
-//                                    currLatitude  = Double.parseDouble(latTextView.getText().toString());
-//                                    currLongitude = Double.parseDouble(lonTextView.getText().toString());
+                                    latTextView.setText(location.getLatitude() + "");
+                                    lonTextView.setText(location.getLongitude() + "");
+                                    currLatitude = Double.parseDouble(latTextView.getText().toString());
+                                    currLongitude = Double.parseDouble(lonTextView.getText().toString());
 
                                 }
                             }
@@ -132,7 +122,7 @@ public class LocationActivity extends AppCompatActivity {
 
 
     @SuppressLint("MissingPermission")
-    private void requestNewLocationData(){
+    private void requestNewLocationData() {
 
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -152,10 +142,10 @@ public class LocationActivity extends AppCompatActivity {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
-            latTextView.setText(mLastLocation.getLatitude()+"");
-            lonTextView.setText(mLastLocation.getLongitude()+"");
-//            currLatitude = Double.parseDouble(latTextView.getText().toString());
-//            currLongitude = Double.parseDouble(lonTextView.getText().toString());
+            latTextView.setText(mLastLocation.getLatitude() + "");
+            lonTextView.setText(mLastLocation.getLongitude() + "");
+            currLatitude = Double.parseDouble(latTextView.getText().toString());
+            currLongitude = Double.parseDouble(lonTextView.getText().toString());
 
         }
     };
@@ -194,7 +184,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         if (checkPermissions()) {
             getLastLocation();
@@ -203,75 +193,46 @@ public class LocationActivity extends AppCompatActivity {
 
     public void getNearby() {
         //reffLand
-          ValueEventListener listener = new ValueEventListener() {
-              @Override
-              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                  DataSnapshot land = dataSnapshot.child("Junction").child("junction");
-                  Log.v("Value of land", ""+ land.getValue());
-              }
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot landName = dataSnapshot.child("Landmark").child("1");
+                DataSnapshot junctionName = dataSnapshot.child("Junction").child("1");
+                //Landmark Data
+                String name = (String) landName.child("landmark").getValue();
+                Double lonLand = (Double) landName.child("longitude").getValue();
+                Double latLand = (Double) landName.child("latitude").getValue();
+                //Junction Data
+                String nameJn = (String) junctionName.child("junction").getValue();
+                Double lonJun = (Double) junctionName.child("longitude").getValue();
+                Double latJun = (Double) junctionName.child("latitude").getValue();
+                Location startPoint = new Location("startPoint");
+                startPoint.setLatitude(currLatitude);
+                startPoint.setLongitude(currLongitude);
+                Location endPoint1 = new Location("Location B");
+                endPoint1.setLatitude(latLand);
+                endPoint1.setLongitude(lonLand);
+                Location endPoint2 = new Location("Location C");
+                endPoint2.setLatitude(latJun);
+                endPoint2.setLongitude(lonJun);
+                float distance1 = startPoint.distanceTo(endPoint1);
+                map.put(distance1, name);
+                float distance2 = startPoint.distanceTo(endPoint2);
+                map.put(distance2, nameJn);
+                float minDistance = Collections.min(map.keySet());
+                String nearbyLocation = map.get(minDistance);
+                nearbyView.setText(nearbyLocation);
 
-              @Override
-              public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
 
-              }
-          };
-          reffLand.addValueEventListener(listener);
-//        reffJn.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Junction junction = dataSnapshot.getValue(Junction.class);
-//                assert junction != null;
-//                String name = junction.getJunction();
-//                Double latitude = junction.getLatitude();
-//                Double longitude = junction.getLongitude();
-//                Location startPoint = new Location("Location A");
-//                startPoint.setLatitude(2.2);
-//                startPoint.setLongitude(2.2);
-//                Location endPoint = new Location("Location B");
-//                endPoint.setLatitude(latitude);
-//                endPoint.setLongitude(longitude);
-//                float distance = startPoint.distanceTo(endPoint);
-//                map.put(distance,name);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//        reffLand.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Landmark landmark = dataSnapshot.getValue(Landmark.class);
-//                assert landmark != null;
-//                String name = landmark.getLandmark();
-//                Double latitude = landmark.getLatitude();
-//                Double longitude = landmark.getLongitude();
-//                Location startPoint = new Location("startPoint");
-//                startPoint.setLatitude(currLatitude);
-//                startPoint.setLongitude(currLongitude);
-//                Location endPoint = new Location("endPoint");
-//                endPoint.setLatitude(latitude);
-//                endPoint.setLongitude(longitude);
-//                float distance = startPoint.distanceTo(endPoint);
-//                map.put(distance,name);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//        float minDistance = Collections.min(map.keySet());
-//        String nearbyLocation = map.get(minDistance);
-//        nearbyView.setText(nearbyLocation);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reff.addValueEventListener(listener);
+
+
     }
-
 }
 
-class SampleClass {
-    Landmark l1, l2;
-}
