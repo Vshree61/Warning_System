@@ -1,10 +1,10 @@
 package com.example.warningsystem;
 
 public class Landmark {
-    private String landmark;
-    private Double longitude;
-    private Double latitude;
-    private Integer speed;
+    String landmark;
+     Double longitude;
+     Double latitude;
+     Integer speed;
 
     public Landmark() {
     }

@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,10 +64,18 @@ public class LocationActivity extends AppCompatActivity {
         nearbyView = findViewById(R.id.nearbyLoc);
         mNearby = findViewById(R.id.nearbyBtn);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        reffLand = FirebaseDatabase.getInstance().getReference().child("Landmark").child("1");
-        reffJn = FirebaseDatabase.getInstance().getReference().child("Junction").child("1");
+        reffLand = FirebaseDatabase.getInstance().getReference();
+        //reffJn = FirebaseDatabase.getInstance().getReference().child("Junction").child("1");
         getLastLocation();
         //getNearby();
+
+        mNearby.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("LocationActivity", "calling nearby");
+                getNearby();
+            }
+        });
 
     }
 
@@ -103,13 +112,14 @@ public class LocationActivity extends AppCompatActivity {
                                 } else {
                                     latTextView.setText(location.getLatitude()+"");
                                     lonTextView.setText(location.getLongitude()+"");
-                                    currLatitude = Double.parseDouble(latTextView.getText().toString());
-                                    currLongitude = Double.parseDouble(lonTextView.getText().toString());
+//                                    currLatitude  = Double.parseDouble(latTextView.getText().toString());
+//                                    currLongitude = Double.parseDouble(lonTextView.getText().toString());
 
                                 }
                             }
                         }
                 );
+                //getNearby();
             } else {
                 Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -144,8 +154,8 @@ public class LocationActivity extends AppCompatActivity {
             Location mLastLocation = locationResult.getLastLocation();
             latTextView.setText(mLastLocation.getLatitude()+"");
             lonTextView.setText(mLastLocation.getLongitude()+"");
-            currLatitude = Double.parseDouble(latTextView.getText().toString());
-            currLongitude = Double.parseDouble(lonTextView.getText().toString());
+//            currLatitude = Double.parseDouble(latTextView.getText().toString());
+//            currLongitude = Double.parseDouble(lonTextView.getText().toString());
 
         }
     };
@@ -190,60 +200,78 @@ public class LocationActivity extends AppCompatActivity {
             getLastLocation();
         }
     }
-/*
+
     public void getNearby() {
-        reffJn.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Junction junction = dataSnapshot.getValue(Junction.class);
-                assert junction != null;
-                String name = junction.getJunction();
-                Double latitude = junction.getLatitude();
-                Double longitude = junction.getLongitude();
-                Location startPoint = new Location("Location A");
-                startPoint.setLatitude(currLatitude);
-                startPoint.setLongitude(currLongitude);
-                Location endPoint = new Location("Location B");
-                endPoint.setLatitude(latitude);
-                endPoint.setLongitude(longitude);
-                float distance = startPoint.distanceTo(endPoint);
-                map.put(distance,name);
+        //reffLand
+          ValueEventListener listener = new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                  DataSnapshot land = dataSnapshot.child("Junction").child("junction");
+                  Log.v("Value of land", ""+ land.getValue());
+              }
 
-            }
+              @Override
+              public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        reffLand.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Landmark landmark = dataSnapshot.getValue(Landmark.class);
-                assert landmark != null;
-                String name = landmark.getLandmark();
-                Double latitude = landmark.getLatitude();
-                Double longitude = landmark.getLongitude();
-                Location startPoint = new Location("startPoint");
-                startPoint.setLatitude(currLatitude);
-                startPoint.setLongitude(currLongitude);
-                Location endPoint = new Location("endPoint");
-                endPoint.setLatitude(latitude);
-                endPoint.setLongitude(longitude);
-                float distance = startPoint.distanceTo(endPoint);
-                map.put(distance,name);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        float minDistance = Collections.min(map.keySet());
-        String nearbyLocation = map.get(minDistance);
-        nearbyView.setText(nearbyLocation);
+              }
+          };
+          reffLand.addValueEventListener(listener);
+//        reffJn.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Junction junction = dataSnapshot.getValue(Junction.class);
+//                assert junction != null;
+//                String name = junction.getJunction();
+//                Double latitude = junction.getLatitude();
+//                Double longitude = junction.getLongitude();
+//                Location startPoint = new Location("Location A");
+//                startPoint.setLatitude(2.2);
+//                startPoint.setLongitude(2.2);
+//                Location endPoint = new Location("Location B");
+//                endPoint.setLatitude(latitude);
+//                endPoint.setLongitude(longitude);
+//                float distance = startPoint.distanceTo(endPoint);
+//                map.put(distance,name);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//        reffLand.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Landmark landmark = dataSnapshot.getValue(Landmark.class);
+//                assert landmark != null;
+//                String name = landmark.getLandmark();
+//                Double latitude = landmark.getLatitude();
+//                Double longitude = landmark.getLongitude();
+//                Location startPoint = new Location("startPoint");
+//                startPoint.setLatitude(currLatitude);
+//                startPoint.setLongitude(currLongitude);
+//                Location endPoint = new Location("endPoint");
+//                endPoint.setLatitude(latitude);
+//                endPoint.setLongitude(longitude);
+//                float distance = startPoint.distanceTo(endPoint);
+//                map.put(distance,name);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//        float minDistance = Collections.min(map.keySet());
+//        String nearbyLocation = map.get(minDistance);
+//        nearbyView.setText(nearbyLocation);
     }
-*/
+
+}
+
+class SampleClass {
+    Landmark l1, l2;
 }
