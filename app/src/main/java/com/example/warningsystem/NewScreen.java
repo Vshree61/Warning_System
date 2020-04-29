@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,10 +29,15 @@ public class NewScreen extends AppCompatActivity {
     EditText mLatitude;
     EditText speedVal;
     Button mSaveBtn;
+    RadioGroup mRadio;
+    RadioButton selectedRadio;
     Junction junction;
+    Landmark landmark;
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     DatabaseReference reff;
+    DatabaseReference reffLand;
     long maxId = 0;
+    long maxId2= 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +47,9 @@ public class NewScreen extends AppCompatActivity {
         mLatitude = findViewById(R.id.latitude);
         speedVal = findViewById(R.id.speed);
         mSaveBtn = findViewById(R.id.saveBtn);
+        mRadio = findViewById(R.id.radioGroup);
         junction = new Junction();
+        landmark = new Landmark();
         reff = FirebaseDatabase.getInstance().getReference().child("Junction");
         reff.addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,19 +63,54 @@ public class NewScreen extends AppCompatActivity {
 
             }
         });
+        reffLand = FirebaseDatabase.getInstance().getReference().child("Landmark");
+        reffLand.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                    maxId2 = (dataSnapshot.getChildrenCount());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         mSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String jName = junctionName.getText().toString().trim();
-                Double longit = Double.parseDouble(mLongitude.getText().toString().trim());
-                Double lati = Double.parseDouble(mLatitude.getText().toString().trim());
-                Integer sp = Integer.parseInt(speedVal.getText().toString().trim());
-                junction.setJunction(jName);
-                junction.setLongitude(longit);
-                junction.setLatitude(lati);
-                junction.setSpeed(sp);
-                reff.child(String.valueOf(maxId+1)).setValue(junction);
-                Toast.makeText(NewScreen.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+                int selectedId = mRadio.getCheckedRadioButtonId();
+                selectedRadio = (RadioButton)findViewById(selectedId);
+                if(selectedId == -1){
+                    Toast.makeText(NewScreen.this, "Please select one option", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    if(selectedRadio.getText().equals("Junction")){
+                        String jName = junctionName.getText().toString().trim();
+                        Double longit = Double.parseDouble(mLongitude.getText().toString().trim());
+                        Double lati = Double.parseDouble(mLatitude.getText().toString().trim());
+                        Integer sp = Integer.parseInt(speedVal.getText().toString().trim());
+                        junction.setJunction(jName);
+                        junction.setLongitude(longit);
+                        junction.setLatitude(lati);
+                        junction.setSpeed(sp);
+                        reff.child(String.valueOf(maxId+1)).setValue(junction);
+                        Toast.makeText(NewScreen.this, " Junction Upload Successful", Toast.LENGTH_SHORT).show();
+                    }
+                    if(selectedRadio.getText().equals("Landmark")){
+                        String lName = junctionName.getText().toString().trim();
+                        Double longit = Double.parseDouble(mLongitude.getText().toString().trim());
+                        Double lati = Double.parseDouble(mLatitude.getText().toString().trim());
+                        Integer sp = Integer.parseInt(speedVal.getText().toString().trim());
+                        landmark.setLandmark(lName);
+                        landmark.setLongitude(longit);
+                        landmark.setLatitude(lati);
+                        landmark.setSpeed(sp);
+                        reffLand.child(String.valueOf(maxId2+1)).setValue(landmark);
+                        Toast.makeText(NewScreen.this, "Landmark Upload Successful", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
             }
         });
 
