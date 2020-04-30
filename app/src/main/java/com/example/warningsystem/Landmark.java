@@ -4,7 +4,7 @@ public class Landmark {
     String landmark;
      Double longitude;
      Double latitude;
-     Integer speed;
+     Long speed;
 
     public Landmark() {
     }
@@ -33,11 +33,11 @@ public class Landmark {
         this.latitude = latitude;
     }
 
-    public Integer getSpeed() {
+    public Long getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Integer speed) {
+    public void setSpeed(Long speed) {
         this.speed = speed;
     }
 }

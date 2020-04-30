@@ -4,7 +4,7 @@ public class Junction {
      String junction;
     Double longitude;
      Double latitude;
-     Integer speed;
+     Long speed;
 
     public Junction() {
     }
@@ -33,11 +33,11 @@ public class Junction {
         this.latitude = latitude;
     }
 
-    public Integer getSpeed() {
+    public Long getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Integer speed) {
+    public void setSpeed(Long speed) {
         this.speed = speed;
     }
 }

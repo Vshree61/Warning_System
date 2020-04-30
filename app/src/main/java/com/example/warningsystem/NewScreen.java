@@ -89,7 +89,7 @@ public class NewScreen extends AppCompatActivity {
                         String jName = junctionName.getText().toString().trim();
                         Double longit = Double.parseDouble(mLongitude.getText().toString().trim());
                         Double lati = Double.parseDouble(mLatitude.getText().toString().trim());
-                        Integer sp = Integer.parseInt(speedVal.getText().toString().trim());
+                        Long sp = Long.parseLong(speedVal.getText().toString().trim());
                         junction.setJunction(jName);
                         junction.setLongitude(longit);
                         junction.setLatitude(lati);
@@ -101,7 +101,7 @@ public class NewScreen extends AppCompatActivity {
                         String lName = junctionName.getText().toString().trim();
                         Double longit = Double.parseDouble(mLongitude.getText().toString().trim());
                         Double lati = Double.parseDouble(mLatitude.getText().toString().trim());
-                        Integer sp = Integer.parseInt(speedVal.getText().toString().trim());
+                        Long sp = Long.parseLong(speedVal.getText().toString().trim());
                         landmark.setLandmark(lName);
                         landmark.setLongitude(longit);
                         landmark.setLatitude(lati);

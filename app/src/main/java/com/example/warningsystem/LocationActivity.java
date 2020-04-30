@@ -2,36 +2,27 @@ package com.example.warningsystem;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
-import com.example.warningsystem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -46,8 +37,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,11 +47,12 @@ public class LocationActivity extends AppCompatActivity {
     FusedLocationProviderClient mFusedLocationClient;
     TextView latTextView, lonTextView, nearbyView;
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
-    Double currLatitude;
-    Double currLongitude;
+    Double currLatitude,currLongitude;
+    Long safeSpeed;
     DatabaseReference reff;
     String nearestLocation;
     Map<Float, String> map = new HashMap<Float, String>();
+    Map<String, Long> speedMap = new HashMap<String, Long>();
     AlertDialog.Builder builder;
     LayoutInflater inflater;
     View dialog;
@@ -216,12 +206,13 @@ public class LocationActivity extends AppCompatActivity {
                 String name = (String) landName.child("landmark").getValue();
                 Double lonLand = (Double) landName.child("longitude").getValue();
                 Double latLand = (Double) landName.child("latitude").getValue();
-                //Integer speedLand = (Integer) landName.child("speed").getValue();
+                Long speedLand = (Long) landName.child("speed").getValue();
                 //Junction Data
                 String nameJn = (String) junctionName.child("junction").getValue();
                 Double lonJun = (Double) junctionName.child("longitude").getValue();
                 Double latJun = (Double) junctionName.child("latitude").getValue();
-                //Integer speedJn = (Integer) junctionName.child("speed").getValue();
+                Long speedJn = (Long) junctionName.child("speed").getValue();
+                //distanceComparison
                 Location startPoint = new Location("startPoint");
                 startPoint.setLatitude(currLatitude);
                 startPoint.setLongitude(currLongitude);
@@ -233,14 +224,18 @@ public class LocationActivity extends AppCompatActivity {
                 endPoint2.setLongitude(lonJun);
                 float distance1 = startPoint.distanceTo(endPoint1);
                 map.put(distance1, name);
+                speedMap.put(name,speedLand);
                 float distance2 = startPoint.distanceTo(endPoint2);
                 map.put(distance2, nameJn);
+                speedMap.put(nameJn,speedJn);
                 float minDistance = Collections.min(map.keySet());
                 nearestLocation = map.get(minDistance);
+                safeSpeed = speedMap.get(nearestLocation);
                 nearbyView.setText(nearestLocation);
                 dialog = inflater.inflate(R.layout.alert_dialog,null);
-                builder.setMessage(nearestLocation+" is approaching! Your current speed is 50 km/hr.Lower it down to 40 km/hr")
-                .setTitle("Alert").setView(dialog);
+                builder.setMessage(nearestLocation+" is approaching! Your current speed is 45 km/hr.Lower it down to " +
+                        safeSpeed+" km/hr")
+                .setTitle("Alert").setView(dialog).setIcon(R.drawable.ic_warning_black_24dp);
                 AlertDialog alert = builder.create();
                 alert.show();
 
