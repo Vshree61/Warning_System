@@ -17,13 +17,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-public class Login extends AppCompatActivity {
+public class LoginManager extends AppCompatActivity {
 
     EditText mEmail, mPassword;
     Button mLoginBtn;
@@ -61,18 +56,18 @@ public class Login extends AppCompatActivity {
                 }
                 progressBar.setVisibility(View.VISIBLE);
                 if (email.equals("warning@abc.com") && password.equals("234567")) {
-                    startActivity(new Intent(Login.this, NewScreen.class));
+                    startActivity(new Intent(LoginManager.this, UploadData.class));
                 } else {
                     //authenticate the user
                     fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(Login.this, "Login Successful ", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Login.this, StartTracking.class));
+                                Toast.makeText(LoginManager.this, "LoginManager Successful ", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginManager.this, MainManager.class));
 
                             } else {
-                                Toast.makeText(Login.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginManager.this, "Error!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                             }
                         }
@@ -85,7 +80,7 @@ public class Login extends AppCompatActivity {
         mCreateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Login.this,Register.class));
+                startActivity(new Intent(LoginManager.this,Register.class));
 
             }
         });

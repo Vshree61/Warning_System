@@ -71,7 +71,7 @@ public class Register extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(Register.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Register.this, StartTracking.class));
+                            startActivity(new Intent(Register.this, MainManager.class));
 
                         }
                         else{
@@ -86,7 +86,7 @@ public class Register extends AppCompatActivity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Register.this,Login.class));
+                startActivity(new Intent(Register.this, LoginManager.class));
 
             }
         });

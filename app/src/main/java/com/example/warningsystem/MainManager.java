@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class StartTracking extends AppCompatActivity {
+public class MainManager extends AppCompatActivity {
 
     Button btnStartTracking;
 
@@ -20,7 +20,7 @@ public class StartTracking extends AppCompatActivity {
         btnStartTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(StartTracking.this, LocationActivity.class));
+                startActivity(new Intent(MainManager.this, LocationManager.class));
             }
         });
     }

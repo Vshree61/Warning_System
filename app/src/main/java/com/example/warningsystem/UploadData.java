@@ -21,9 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.EmptyStackException;
-
-public class NewScreen extends AppCompatActivity {
+public class UploadData extends AppCompatActivity {
     EditText junctionName;
     EditText mLongitude;
     EditText mLatitude;
@@ -82,7 +80,7 @@ public class NewScreen extends AppCompatActivity {
                 int selectedId = mRadio.getCheckedRadioButtonId();
                 selectedRadio = (RadioButton)findViewById(selectedId);
                 if(selectedId == -1){
-                    Toast.makeText(NewScreen.this, "Please select one option", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UploadData.this, "Please select one option", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     if(selectedRadio.getText().equals("Junction")){
@@ -95,7 +93,7 @@ public class NewScreen extends AppCompatActivity {
                         junction.setLatitude(lati);
                         junction.setSpeed(sp);
                         reff.child(String.valueOf(maxId+1)).setValue(junction);
-                        Toast.makeText(NewScreen.this, " Junction Upload Successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadData.this, " Junction Upload Successful", Toast.LENGTH_SHORT).show();
                     }
                     if(selectedRadio.getText().equals("Landmark")){
                         String lName = junctionName.getText().toString().trim();
@@ -107,7 +105,7 @@ public class NewScreen extends AppCompatActivity {
                         landmark.setLatitude(lati);
                         landmark.setSpeed(sp);
                         reffLand.child(String.valueOf(maxId2+1)).setValue(landmark);
-                        Toast.makeText(NewScreen.this, "Landmark Upload Successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadData.this, "Landmark Upload Successful", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -126,7 +124,7 @@ public class NewScreen extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.logout){
             fAuth.signOut();
-            startActivity(new Intent(NewScreen.this,Login.class));
+            startActivity(new Intent(UploadData.this, LoginManager.class));
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -139,7 +137,7 @@ public class NewScreen extends AppCompatActivity {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 for(DataSnapshot child:children){
                     Junction value = child.getValue(Junction.class);
-                    Toast.makeText(Login.this, "Change in data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginManager.this, "Change in data", Toast.LENGTH_SHORT).show();
                 }
             }
 

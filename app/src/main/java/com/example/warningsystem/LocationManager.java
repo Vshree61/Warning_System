@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +39,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocationActivity extends AppCompatActivity {
+public class LocationManager extends AppCompatActivity {
 
     int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
@@ -86,7 +84,7 @@ public class LocationActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.logout) {
             fAuth.signOut();
-            startActivity(new Intent(LocationActivity.this, Login.class));
+            startActivity(new Intent(LocationManager.this, LoginManager.class));
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -171,9 +169,9 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private boolean isLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-                LocationManager.NETWORK_PROVIDER
+        android.location.LocationManager locationManager = (android.location.LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+                android.location.LocationManager.NETWORK_PROVIDER
         );
     }
 
@@ -212,6 +210,7 @@ public class LocationActivity extends AppCompatActivity {
                 Double lonJun = (Double) junctionName.child("longitude").getValue();
                 Double latJun = (Double) junctionName.child("latitude").getValue();
                 Long speedJn = (Long) junctionName.child("speed").getValue();
+
                 //distanceComparison
                 Location startPoint = new Location("startPoint");
                 startPoint.setLatitude(currLatitude);
