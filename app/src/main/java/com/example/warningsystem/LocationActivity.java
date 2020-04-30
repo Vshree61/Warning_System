@@ -2,7 +2,9 @@ package com.example.warningsystem;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,6 +14,7 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.warningsystem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,8 +61,11 @@ public class LocationActivity extends AppCompatActivity {
     Double currLatitude;
     Double currLongitude;
     DatabaseReference reff;
+    String nearestLocation;
     Map<Float, String> map = new HashMap<Float, String>();
-
+    AlertDialog.Builder builder;
+    LayoutInflater inflater;
+    View dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +75,12 @@ public class LocationActivity extends AppCompatActivity {
         nearbyView = findViewById(R.id.nearbyLoc);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         reff = FirebaseDatabase.getInstance().getReference();
+        builder = new AlertDialog.Builder(this);
+        inflater = this.getLayoutInflater();
         //reffJn = FirebaseDatabase.getInstance().getReference().child("Junction").child("1");
         getLastLocation();
         getNearby();
+
 
     }
 
@@ -202,10 +216,12 @@ public class LocationActivity extends AppCompatActivity {
                 String name = (String) landName.child("landmark").getValue();
                 Double lonLand = (Double) landName.child("longitude").getValue();
                 Double latLand = (Double) landName.child("latitude").getValue();
+                //Integer speedLand = (Integer) landName.child("speed").getValue();
                 //Junction Data
                 String nameJn = (String) junctionName.child("junction").getValue();
                 Double lonJun = (Double) junctionName.child("longitude").getValue();
                 Double latJun = (Double) junctionName.child("latitude").getValue();
+                //Integer speedJn = (Integer) junctionName.child("speed").getValue();
                 Location startPoint = new Location("startPoint");
                 startPoint.setLatitude(currLatitude);
                 startPoint.setLongitude(currLongitude);
@@ -220,8 +236,13 @@ public class LocationActivity extends AppCompatActivity {
                 float distance2 = startPoint.distanceTo(endPoint2);
                 map.put(distance2, nameJn);
                 float minDistance = Collections.min(map.keySet());
-                String nearbyLocation = map.get(minDistance);
-                nearbyView.setText(nearbyLocation);
+                nearestLocation = map.get(minDistance);
+                nearbyView.setText(nearestLocation);
+                dialog = inflater.inflate(R.layout.alert_dialog,null);
+                builder.setMessage(nearestLocation+" is approaching! Your current speed is 50 km/hr.Lower it down to 40 km/hr")
+                .setTitle("Alert").setView(dialog);
+                AlertDialog alert = builder.create();
+                alert.show();
 
             }
 
@@ -232,7 +253,9 @@ public class LocationActivity extends AppCompatActivity {
         };
         reff.addValueEventListener(listener);
 
-
     }
+
+
+
 }
 

@@ -1,10 +1,10 @@
 package com.example.warningsystem;
 
 public class Junction {
-    private String junction;
-    private Double longitude;
-    private Double latitude;
-    private Integer speed;
+     String junction;
+    Double longitude;
+     Double latitude;
+     Integer speed;
 
     public Junction() {
     }
