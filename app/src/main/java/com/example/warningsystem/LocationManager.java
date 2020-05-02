@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,49 +48,18 @@ public class LocationManager extends AppCompatActivity {
     TextView latTextView, lonTextView, nearbyView;
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     Double currLatitude,currLongitude;
-    Long safeSpeed;
-    DatabaseReference reff;
-    String nearestLocation;
-    Map<Float, String> map = new HashMap<Float, String>();
-    Map<String, Long> speedMap = new HashMap<String, Long>();
-    AlertDialog.Builder builder;
-    LayoutInflater inflater;
-    View dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
         latTextView = findViewById(R.id.latTextView);
         lonTextView = findViewById(R.id.lonTextView);
-        nearbyView = findViewById(R.id.nearbyLoc);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        reff = FirebaseDatabase.getInstance().getReference();
-        builder = new AlertDialog.Builder(this);
-        inflater = this.getLayoutInflater();
-        //reffJn = FirebaseDatabase.getInstance().getReference().child("Junction").child("1");
         getLastLocation();
-        getNearby();
-
 
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.logout) {
-            fAuth.signOut();
-            startActivity(new Intent(LocationManager.this, LoginManager.class));
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressLint("MissingPermission")
     private void getLastLocation() {
@@ -106,12 +77,16 @@ public class LocationManager extends AppCompatActivity {
                                     lonTextView.setText(location.getLongitude() + "");
                                     currLatitude = Double.parseDouble(latTextView.getText().toString());
                                     currLongitude = Double.parseDouble(lonTextView.getText().toString());
+                                    Intent intent = new Intent(LocationManager.this, DisplayNearby.class);
+                                    intent.putExtra("LAT",currLatitude.toString());
+                                    intent.putExtra("LON",currLongitude.toString());
+                                    startActivity(intent);
 
                                 }
                             }
                         }
                 );
-                //getNearby();
+
             } else {
                 Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -148,6 +123,10 @@ public class LocationManager extends AppCompatActivity {
             lonTextView.setText(mLastLocation.getLongitude() + "");
             currLatitude = Double.parseDouble(latTextView.getText().toString());
             currLongitude = Double.parseDouble(lonTextView.getText().toString());
+            Intent intent = new Intent(LocationManager.this, DisplayNearby.class);
+            intent.putExtra("LAT",currLatitude.toString());
+            intent.putExtra("LON",currLongitude.toString());
+            startActivity(intent);
 
         }
     };
@@ -192,63 +171,6 @@ public class LocationManager extends AppCompatActivity {
             getLastLocation();
         }
     }
-
-    public void getNearby() {
-        //reffLand
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                DataSnapshot landName = dataSnapshot.child("Landmark").child("1");
-                DataSnapshot junctionName = dataSnapshot.child("Junction").child("1");
-                //Landmark Data
-                String name = (String) landName.child("landmark").getValue();
-                Double lonLand = (Double) landName.child("longitude").getValue();
-                Double latLand = (Double) landName.child("latitude").getValue();
-                Long speedLand = (Long) landName.child("speed").getValue();
-                //Junction Data
-                String nameJn = (String) junctionName.child("junction").getValue();
-                Double lonJun = (Double) junctionName.child("longitude").getValue();
-                Double latJun = (Double) junctionName.child("latitude").getValue();
-                Long speedJn = (Long) junctionName.child("speed").getValue();
-
-                //distanceComparison
-                Location startPoint = new Location("startPoint");
-                startPoint.setLatitude(currLatitude);
-                startPoint.setLongitude(currLongitude);
-                Location endPoint1 = new Location("Location B");
-                endPoint1.setLatitude(latLand);
-                endPoint1.setLongitude(lonLand);
-                Location endPoint2 = new Location("Location C");
-                endPoint2.setLatitude(latJun);
-                endPoint2.setLongitude(lonJun);
-                float distance1 = startPoint.distanceTo(endPoint1);
-                map.put(distance1, name);
-                speedMap.put(name,speedLand);
-                float distance2 = startPoint.distanceTo(endPoint2);
-                map.put(distance2, nameJn);
-                speedMap.put(nameJn,speedJn);
-                float minDistance = Collections.min(map.keySet());
-                nearestLocation = map.get(minDistance);
-                safeSpeed = speedMap.get(nearestLocation);
-                nearbyView.setText(nearestLocation);
-                dialog = inflater.inflate(R.layout.alert_dialog,null);
-                builder.setMessage(nearestLocation+" is approaching! Your current speed is 45 km/hr.Lower it down to " +
-                        safeSpeed+" km/hr")
-                .setTitle("Alert").setView(dialog).setIcon(R.drawable.ic_warning_black_24dp);
-                AlertDialog alert = builder.create();
-                alert.show();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        reff.addValueEventListener(listener);
-
-    }
-
 
 
 }

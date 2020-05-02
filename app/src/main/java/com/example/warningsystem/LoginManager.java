@@ -63,7 +63,7 @@ public class LoginManager extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(LoginManager.this, "LoginManager Successful ", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginManager.this, "Login Successful ", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginManager.this, MainManager.class));
 
                             } else {

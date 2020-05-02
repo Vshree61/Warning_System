@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainManager"></activity>
+        <activity android:name=".DisplayNearby"></activity>
+        <activity android:name=".MainManager" />
         <activity android:name=".LocationManager" />
         <activity android:name=".UploadData" />
         <activity android:name=".LoginManager">
