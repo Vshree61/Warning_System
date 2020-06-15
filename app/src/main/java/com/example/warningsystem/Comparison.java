@@ -12,6 +12,7 @@ public class Comparison{
                 Location startPoint = new Location("startPoint");
                 startPoint.setLatitude(currLatitude);
                 startPoint.setLongitude(currLongitude);
+		// curr_speed = startPoint.getSpeed(); // in m/s
                 Location endPoint1 = new Location("Location B");
                 endPoint1.setLatitude(latLand);
                 endPoint1.setLongitude(lonLand);
