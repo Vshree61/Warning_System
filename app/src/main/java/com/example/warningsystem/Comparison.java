@@ -3,6 +3,7 @@ import java.util.*;
 import android.location.Location;
 public class Comparison{
 	int speed = 40;
+	int th_value = 20;
 	Map<Float, String> map = new HashMap<Float, String>();
 	public Comparison(){}
 	public String getNearestPoint(double currLatitude,double currLongitude,double latLand, double lonLand
@@ -27,7 +28,7 @@ public class Comparison{
 			}
 	
 	public int compareSpeed(int safe){
-		if (speed > safe){
+		if (speed - safe <= th_value){
 			return 1;
 		}
 		else {
