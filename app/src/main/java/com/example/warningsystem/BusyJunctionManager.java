@@ -13,21 +13,33 @@ public class BusyJunctionManager{
 	public double lon;
 	DatabaseReference reff;
 	ValueEventListener listener;
-	public void getNearbyJunction(){
+	public void getNearbyJunction(double currLatitude, double currLongitude){
+		float distance = Float.MAX_VALUE;
 		reff = FirebaseDatabase.getInstance().getReference();
 		listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                DataSnapshot landName = dataSnapshot.child("Junction").child("1");
-                //Landmark Data
-                String name = (String) landName.child("junction").getValue();
-                Double lonJn = (Double) landName.child("longitude").getValue();
-                Double latJn = (Double) landName.child("latitude").getValue();
-                Long speed = (Long) landName.child("speed").getValue();
-				nameJn = name;
-				speedJn = speed;
-				lat = latJn;
-				lon = lonJn;
+				for( DataSnapshot JnName : dataSnapshot.child("Junction").getChildren()){
+                //Junction Data
+                String name = (String) JnName.child("junction").getValue();
+                Double lonJn = (Double) JnName.child("longitude").getValue();
+                Double latJn = (Double) JnName.child("latitude").getValue();
+                Long speed = (Long) JnName.child("speed").getValue();
+				Location startPoint = new Location("startPoint");
+                startPoint.setLatitude(currLatitude);
+                startPoint.setLongitude(currLongitude);
+				Location endPoint = new Location("Location B");
+                endPoint.setLatitude(latJn);
+                endPoint.setLongitude(lonJn);
+				float distance_Jn = startPoint.distanceTo(endPoint);
+				if(distance_Jn < distance && distance_Jn <= 500.0){
+					distance = distance_Jn;
+					nameJn = name;
+					speedJn = speed;
+					lat = latJn;
+					lon = lonJn;
+					}
+				}
 			}
 		@Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
