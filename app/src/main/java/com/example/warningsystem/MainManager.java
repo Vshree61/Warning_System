@@ -39,8 +39,8 @@ public class MainManager extends AppCompatActivity {
         btnStartTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-				checkVersion();
-				query(currLatitude, currLongitude);
+				//checkVersion();
+				query(currLatitude, currLongitude); // to retrieve the nearest landmark and nearest busy junction
             }
         });
 
@@ -48,27 +48,27 @@ public class MainManager extends AppCompatActivity {
 	public void query(double currLatitude, currLongitude){
 		//fetching Landmarks
 		GoogleMap land = new GoogleMap();
-		land.getNearbyLandmark();
+		land.getNearbyLandmark(currLatitude,currLongitude); //to retrieve the nearest landmark 
 		double landLat = land.lat;
 		double landLon =  land.lon;
 		String nameLand = land.nameLand;
 		Long speedLand = land.speedLand;
-		speedMap.put(nameLand,speedLand);
+		speedMap.put(nameLand,speedLand); // to keep a track of speed limit corresponding to nearest landmark
 		//fetching busy junction
 		BusyJunctionManager junc = new BusyJunctionManager();
-		junc.getNearbyJunction();
+		junc.getNearbyJunction(currLatitude,currLongitude); // to retrieve the nearest busy junction
 		double latJun = junc.lat;
 		double lonJun = junc.lon;
 		String nameJun = junc.nameJn;
 		Long speedJun = junc.speedJn;
-		speedMap.put(nameJun,speedJun);
-		getNearby(landLat,landLon,latJun,lonJun,nameLand,nameJun);
+		speedMap.put(nameJun,speedJun); //to keep a track of speed limit corresponding to nearest busy junction
+		getNearby(landLat,landLon,latJun,lonJun,nameLand,nameJun); // to retrieve the closest among the nearest landmark and busy junction
 		
 	}
 	public void getNearby(double landLat,double landLon, double latJun,double lonJun,String nameLand,String nameJun){
-		String nearestLocation = c.getNearestPoint(landLat,landLon,latJun,lonJun,nameLand,nameJun);
-		int safe_speed = speedMap.get(nearestLocation);
-		compare(safe_speed,nearestLocation);
+		String nearestLocation = c.getNearestPoint(landLat,landLon,latJun,lonJun,nameLand,nameJun); // name of the nearest point
+		int safe_speed = speedMap.get(nearestLocation); // the safe speed value corresponding to the nearest landmark or busy junction
+		compare(safe_speed,nearestLocation); // comparison of current speed and speed limit
 		
 	}
 	public void compare(int safe_speed,String nearestLocation){
@@ -79,7 +79,7 @@ public class MainManager extends AppCompatActivity {
                         safe_speed+" km/hr")
                         .setTitle("Alert").setView(dialog).setIcon(R.drawable.ic_warning_black_24dp);
             AlertDialog alert = builder.create();
-            alert.show();
+            alert.show(); // displaying the alert
 		}
 			
 	}
