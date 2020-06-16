@@ -25,7 +25,7 @@ public class MainManager extends AppCompatActivity {
 	Comparison c = new Comparison();
 	Map<String, Long> speedMap = new HashMap<String, Long>();
 	AlertDialog.Builder builder;
-    LayoutInflater inflater;
+    	LayoutInflater inflater;
 	View dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +34,22 @@ public class MainManager extends AppCompatActivity {
 		builder = new AlertDialog.Builder(this);
         inflater = this.getLayoutInflater();
         btnStartTracking = findViewById(R.id.btn_start_tracking);
-		currLatitude = Double.parseDouble(getIntent().getStringExtra("LAT"));
-        currLongitude = Double.parseDouble(getIntent().getStringExtra("LON"));
         btnStartTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 				//checkVersion();
-				query(currLatitude, currLongitude); // to retrieve the nearest landmark and nearest busy junction
+		    		//new Timer().scheduleAtFixedRate(new TimerTask() 
+				//{
+   					//@Override
+   					//public void run() {
+						Intent intent = new Intent(MainManager.this, LocationManager.class);
+						startActivity(intent);
+         					currLatitude = Double.parseDouble(getIntent().getStringExtra("LAT"));
+        					currLongitude = Double.parseDouble(getIntent().getStringExtra("LON"));
+						query(currLatitude, currLongitude); // to retrieve the nearest landmark and nearest busy junction
+   					//}
+				//}, 0, 10000);
+		    		
             }
         });
 
