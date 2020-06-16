@@ -1,3 +1,4 @@
+// Author : Rimjhim
 package com.example.warningsystem;
 
 import android.Manifest;
@@ -77,7 +78,7 @@ public class LocationManager extends AppCompatActivity {
                                     lonTextView.setText(location.getLongitude() + "");
                                     currLatitude = Double.parseDouble(latTextView.getText().toString());
                                     currLongitude = Double.parseDouble(lonTextView.getText().toString());
-                                    Intent intent = new Intent(LocationManager.this, DisplayNearby.class);
+                                    Intent intent = new Intent(LocationManager.this, MainManager.class);
                                     intent.putExtra("LAT",currLatitude.toString());
                                     intent.putExtra("LON",currLongitude.toString());
                                     startActivity(intent);
