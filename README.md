@@ -16,14 +16,14 @@ Rimjhim Bhadani :Developer
 # Project Wiki
 Read more : [Connection_Failed](http://103.127.146.165/wiki/index.php?title=Connection_Failed:Main)
 
-#Release Notes
-*v0.1*
+# Release Notes
+-v0.1
 This Release contains the functionalities :
 1. Login and Registration
 2. Fetching Current location
 3. Fetching nearest junction(with bug)
 
-*v0.2*
+-v0.2
 This Release contains:
 1. Fetching nearest junction (bug fixed)
 2. Fetching nearest landmark
@@ -31,7 +31,7 @@ This Release contains:
 4. Display of alert
 5. Unit Tests
 
-*v1.0*
+-v1.0
 This Release contains:
 1. Login and registration
 2. Fetching current location
@@ -40,6 +40,6 @@ This Release contains:
 5. Displaying alert
 6. Updates Readme
 
-#Troubleshoot
+# Troubleshoot
 1.Try switching off the location services and turn on again
 2.Check Internet connection and try again
