@@ -3,8 +3,8 @@ package com.example.warningsystem;
 import java.util.*;
 import android.location.Location;
 public class Comparison{
-	int speed = 40;
-	int th_value = 2;
+	int speed = 45;
+	int th_value = 3;
 	Map<Float, String> map = new HashMap<Float, String>();
 	public Comparison(){}
 	public String getNearestPoint(double currLatitude,double currLongitude,double latLand, double lonLand
